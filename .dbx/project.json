@@ -1,0 +1,15 @@
+{
+  "environments": {
+    "ci": {
+      "profile": "CHHS_DEV",
+      "storage_type": "mlflow",
+      "properties": {
+        "workspace_directory": "/Shared/dbx/ade_recurring_etl/ci",
+        "artifact_location": "dbfs:/Shared/dbx/projects/ade_recurring_etl/ci"
+      }
+    }
+  },
+  "inplace_jinja_support": false,
+  "failsafe_cluster_reuse_with_assets": false,
+  "context_based_upload_for_execute": false
+}
