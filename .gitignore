@@ -42,3 +42,7 @@ mlruns/
 .env*
 
 .venv/
+
+.eggs/
+pip-wheel-metadata/
+spark-warehouse/
