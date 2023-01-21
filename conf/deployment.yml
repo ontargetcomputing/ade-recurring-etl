@@ -76,6 +76,7 @@ environments:
           # git_branch: "{{env['GIT_BRANCH']}}"
           # git_tag: "{{env['GIT_TAG']}}"
           # git_commit: "{{env['GIT_COMMIT']}}"
+          git_branch: main
         tasks:
           - task_key: "notebook"
             deployment_config:
