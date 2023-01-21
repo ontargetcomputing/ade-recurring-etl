@@ -16,50 +16,67 @@ environments:
       #######################################################################################
       #   Example workflow for integration tests                                            #
       #######################################################################################
-      - name: "ade-recurring-etl-sample-tests"
-        tasks:
-          - task_key: "main"
-            <<: *basic-static-cluster
-            spark_python_task:
-                python_file: "file://tests/entrypoint.py"
-                # this call supports all standard pytest arguments
-                parameters: ["file:fuse://tests/integration", "--cov=ade_recurring_etl"]
+      # - name: "WIP-ade-recurring-etl-sample-tests"
+      #   tasks:
+      #     - task_key: "main"
+      #       <<: *basic-static-cluster
+      #       spark_python_task:
+      #           python_file: "file://tests/entrypoint.py"
+      #           # this call supports all standard pytest arguments
+      #           parameters: ["file:fuse://tests/integration", "--cov=ade_recurring_etl"]
       #######################################################################################
       # this is an example job with single ETL task based on 2.1 API and wheel_task format #
       ######################################################################################
-      - name: "ade-recurring-etl-sample-etl"
-        tasks:
-          - task_key: "main"
-            <<: *basic-static-cluster
-            python_wheel_task:
-              package_name: "ade_recurring_etl"
-              entry_point: "etl" # take a look at the setup.py entry_points section for details on how to define an entrypoint
-              parameters: ["--conf-file", "file:fuse://conf/tasks/sample_etl_config.yml"]
+      # - name: "WIP-ade-recurring-etl-sample-etl"
+      #   tasks:
+      #     - task_key: "main"
+      #       <<: *basic-static-cluster
+      #       python_wheel_task:
+      #         package_name: "ade_recurring_etl"
+      #         entry_point: "etl" # take a look at the setup.py entry_points section for details on how to define an entrypoint
+      #         parameters: ["--conf-file", "file:fuse://conf/tasks/sample_etl_config.yml"]
       #############################################################
       # this is an example multitask job with notebook task       #
       #############################################################
-      - name: "ade-recurring-etl-sample-multitask"
-        job_clusters:
-          - job_cluster_key: "default"
-            <<: *basic-static-cluster
-        tasks:
-          - task_key: "etl"
-            job_cluster_key: "default"
-            spark_python_task:
-              python_file: "file://ade_recurring_etl/tasks/sample_etl_task.py"
-              parameters: [ "--conf-file", "file:fuse://conf/tasks/sample_etl_config.yml" ]
-          - task_key: "ml"
-            depends_on:
-              - task_key: "etl"
-            job_cluster_key: "default"
-            python_wheel_task:
-              package_name: "ade_recurring_etl"
-              entry_point: "ml"
-              parameters: [ "--conf-file", "file:fuse://conf/tasks/sample_ml_config.yml" ]
+      # - name: "WIP-ade-recurring-etl-sample-multitask"
+      #   job_clusters:
+      #     - job_cluster_key: "default"
+      #       <<: *basic-static-cluster
+      #   tasks:
+      #     - task_key: "etl"
+      #       job_cluster_key: "default"
+      #       spark_python_task:
+      #         python_file: "file://ade_recurring_etl/tasks/sample_etl_task.py"
+      #         parameters: [ "--conf-file", "file:fuse://conf/tasks/sample_etl_config.yml" ]
+      #     - task_key: "ml"
+      #       depends_on:
+      #         - task_key: "etl"
+      #       job_cluster_key: "default"
+      #       python_wheel_task:
+      #         package_name: "ade_recurring_etl"
+      #         entry_point: "ml"
+      #         parameters: [ "--conf-file", "file:fuse://conf/tasks/sample_ml_config.yml" ]
           ###############################################################################
           # this is an example task based on the notebook                               #
           # Please note that first you'll need to add a Repo and commit notebook to it. #
           ###############################################################################
+          # - task_key: "notebook"
+          #   deployment_config:
+          #     no_package: true # we omit using package since code will be shipped directly from the Repo
+          #   depends_on:
+          #     - task_key: "ml"
+          #   job_cluster_key: "default"
+          #   notebook_task:
+          #     notebook_path: "/Repos/Staging/ade_recurring_etl/notebooks/sample_notebook"
+      - name: "WIP-git-notebook"
+        git_source:
+          git_url: https://github.com/sontargetcomputing/ade-recurring-etl.git
+          git_provider: "github"
+          # dbx configure --enable-inplace-jinja-support
+          # git_branch: "{{env['GIT_BRANCH']}}"
+          # git_tag: "{{env['GIT_TAG']}}"
+          # git_commit: "{{env['GIT_COMMIT']}}"
+        tasks:
           - task_key: "notebook"
             deployment_config:
               no_package: true # we omit using package since code will be shipped directly from the Repo
@@ -67,5 +84,10 @@ environments:
               - task_key: "ml"
             job_cluster_key: "default"
             notebook_task:
-              notebook_path: "/Repos/Staging/ade_recurring_etl/notebooks/sample_notebook"
+              #notebook_path: "/Repos/Staging/ade_recurring_etl/notebooks/sample_notebook"
+              notebook_path: "/notebooks/sample_notebook"
+
+
+
+
 

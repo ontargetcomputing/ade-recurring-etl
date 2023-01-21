@@ -22,7 +22,8 @@
 
 # COMMAND ----------
 
-from ade_recurring_etl.tasks.sample_ml_task import SampleMLTask
+# from ade_recurring_etl.tasks.sample_ml_task import SampleMLTask
 
-pipeline = SampleMLTask.get_pipeline()
-print(pipeline)
+# pipeline = SampleMLTask.get_pipeline()
+# print(pipeline)
+print('Hello World')
