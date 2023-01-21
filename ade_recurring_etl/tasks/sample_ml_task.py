@@ -11,6 +11,18 @@ import mlflow
 class SampleMLTask(Task):
     TARGET_COLUMN: str = "MedHouseVal"
 
+    def __init__(self, spark=None, init_conf=None):
+        super(SampleMLTask, self).__init__(spark, init_conf)
+        if not bool(self.conf):
+          self.conf = {
+            "input": {
+              "database": "default",
+              "table": "sklearn_housing"
+            },
+            'experiment': "/Shared/ade-recurring-etl_experiment"
+          }
+        
+
     def _read_data(self) -> pd.DataFrame:
         db = self.conf["input"].get("database", "default")
         table = self.conf["input"]["table"]

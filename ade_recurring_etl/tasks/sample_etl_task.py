@@ -4,6 +4,15 @@ import pandas as pd
 
 
 class SampleETLTask(Task):
+    def __init__(self, spark=None, init_conf=None):
+        super(SampleETLTask, self).__init__(spark, init_conf)
+        if not bool(self.conf):
+          self.conf = {
+            "output": {
+              "database": "default",
+              "table": "sklearn_housing"
+            }
+          }  
     def _write_data(self):
         db = self.conf["output"].get("database", "default")
         table = self.conf["output"]["table"]
@@ -12,6 +21,8 @@ class SampleETLTask(Task):
         df = self.spark.createDataFrame(_data)
         df.write.format("delta").mode("overwrite").saveAsTable(f"{db}.{table}")
         self.logger.info("Dataset successfully written")
+        _data2: pd.DataFrame = self.spark.table(f"{db}.{table}").toPandas()
+        print(len(_data2))
 
     def launch(self):
         self.logger.info("Launching sample ETL task")

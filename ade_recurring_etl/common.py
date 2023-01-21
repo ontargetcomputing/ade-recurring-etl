@@ -4,8 +4,9 @@ from typing import Dict, Any
 import yaml
 import pathlib
 from pyspark.sql import SparkSession
+from delta import *
 import sys
-
+import os
 
 def get_dbutils(
     spark: SparkSession,
@@ -46,6 +47,12 @@ class Task(ABC):
     @staticmethod
     def _prepare_spark(spark) -> SparkSession:
         if not spark:
+            # builder = pyspark.sql.SparkSession.builder.appName("Task") \
+            #     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+            #     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+
+            # spark = configure_spark_with_delta_pip(builder).getOrCreate()          
+
             return SparkSession.builder.getOrCreate()
         else:
             return spark
@@ -87,7 +94,12 @@ class Task(ABC):
 
     def _prepare_logger(self):
         log4j_logger = self.spark._jvm.org.apache.log4j  # noqa
-        return log4j_logger.LogManager.getLogger(self.__class__.__name__)
+        self.log4j_logger = log4j_logger
+        thelogger = log4j_logger.LogManager.getLogger(self.__class__.__name__)
+        if os.environ.get("DEVELOPMENT") == "true":
+            thelogger.setLevel(log4j_logger.Level.DEBUG)
+
+        return thelogger
 
     def _log_conf(self):
         # log parameters
